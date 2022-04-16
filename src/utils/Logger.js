@@ -1,7 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, FlatList, StyleSheet} from 'react-native';
 
-function Logger({data=[]}) {
+export const useLogMessage = initialValue => {
+  const [logMessage, setLogMessage] = useState([]);
+  return [
+    logMessage,
+    (msg) => {
+      const newArray = [...logMessage , msg];
+      setLogMessage(newArray);
+    }
+  ];
+};
+
+const Logger = ({data=[]}) => {
 
   const separator = () => {
     return (

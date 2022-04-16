@@ -1,20 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {View, Button, StyleSheet} from 'react-native';
 import AppLovinMAX from 'react-native-applovin-max';
-import Account from '../Account';
-import Logger from './Logger';
-import adLoadState from './AdLoadState';
+import Accounts from './Accounts';
+import Logger, {useLogMessage} from '../utils/Logger';
 
-const ProgMrec = ({navigation, route}) => {
-  const [logMessage, setLogMessage] = useState([]);
-
-  const logStatus = (msg) => {
-    const newArray = [...logMessage , msg];
-    setLogMessage(newArray);
-  }
-
-  const [isProgrammaticMRecCreated, setIsProgrammaticMRecCreated] = useState(false);
-  const [isProgrammaticMRecShowing, setIsProgrammaticMRecShowing] = useState(false);
+const MrecProg = ({navigation, route}) => {
+  const [logMessage, logStatus] = useLogMessage([]);
+  const [isCreated, setIsCreated] = useState(false);
+  const [isShowing, setIsShowing] = useState(false);
 
   // MREC Ad Listeners
   AppLovinMAX.addEventListener('OnMRecAdLoadedEvent', (adInfo) => {
@@ -34,20 +27,20 @@ const ProgMrec = ({navigation, route}) => {
   });
 
   useEffect(() => {
-    if (!isProgrammaticMRecCreated) {
+    if (!isCreated) {
       AppLovinMAX.createMRec(
-        Account.MREC_AD_UNIT_ID,
+        Accounts.MREC_AD_UNIT_ID,
         AppLovinMAX.AdViewPosition.CENTERED
       );
 
-      setIsProgrammaticMRecCreated(true);
+      setIsCreated(true);
     }
   },[]);
 
   useEffect(() => {
       navigation.addListener('beforeRemove', (e) => {
-        AppLovinMAX.hideMRec(Account.MREC_AD_UNIT_ID);
-        setIsProgrammaticMRecShowing(false);
+        AppLovinMAX.hideMRec(Accounts.MREC_AD_UNIT_ID);
+        setIsShowing(false);
       })
   }, [navigation]);
 
@@ -57,25 +50,25 @@ const ProgMrec = ({navigation, route}) => {
       <Logger data={logMessage}/>
       <View style={styles.bottom}>
         <Button
-          title={isProgrammaticMRecShowing ? 'Hide' : 'Show'}
+          title={isShowing ? 'Hide' : 'Show'}
           onPress={() => {
-            if (isProgrammaticMRecShowing) {
-              AppLovinMAX.hideMRec(Account.MREC_AD_UNIT_ID);
+            if (isShowing) {
+              AppLovinMAX.hideMRec(Accounts.MREC_AD_UNIT_ID);
             } else {
 
-              if (!isProgrammaticMRecCreated) {
+              if (!isCreated) {
                 AppLovinMAX.createMRec(
-                  Account.MREC_AD_UNIT_ID,
+                  Accounts.MREC_AD_UNIT_ID,
                   AppLovinMAX.AdViewPosition.CENTERED
                 );
 
-                setIsProgrammaticMRecCreated(true);
+                setIsCreated(true);
               }
 
-              AppLovinMAX.showMRec(Account.MREC_AD_UNIT_ID);
+              AppLovinMAX.showMRec(Accounts.MREC_AD_UNIT_ID);
             }
 
-            setIsProgrammaticMRecShowing(!isProgrammaticMRecShowing);
+            setIsShowing(!isShowing);
           }}
         />
       </View>
@@ -93,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProgMrec;
+export default MrecProg;

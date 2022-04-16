@@ -22,12 +22,32 @@ const MREC_AD_UNIT_ID = Platform.select({
   android: 'c935a27914e661dc',
 });
 
+// 360 x 120
+const NATIVE_SMALL_AD_UNIT_ID = Platform.select({
+  ios: '22d8e8eb2b3497ae',
+  android: 'c935a27914e661dc',
+});
+
+// 300 x 250
+const NATIVE_MEDIUM_AD_UNIT_ID = Platform.select({
+  ios: '22d8e8eb2b3497ae',
+  android: 'c935a27914e661dc',
+});
+
+const NATIVE_MANUAL_AD_UNIT_ID = Platform.select({
+  ios: '22d8e8eb2b3497ae',
+  android: 'c935a27914e661dc',
+});
+
+const SUPPORT_URL = 'https://support.applovin.com/support/home';
+
 export default {
   SDK_KEY,
   INTERSTITIAL_AD_UNIT_ID,
   REWARDED_AD_UNIT_ID,
   BANNER_AD_UNIT_ID,
   MREC_AD_UNIT_ID,
+  SUPPORT_URL,
 };
 
 //////////////////////////////////////////////

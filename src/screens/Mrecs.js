@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import AppLovinMAX from 'react-native-applovin-max';
-import MenuList from './MenuList';
+import MenuList from '../utils/MenuList';
 
 const Mrecs = ({navigation, route}) => {
 
@@ -10,8 +9,8 @@ const Mrecs = ({navigation, route}) => {
   }
 
   const MrecMenu = [
-    {key: 'ProgMrec',   name: 'Programmatic MREC', func: pushScreen},
-    {key: 'NativeMrec', name: 'Native UI MREC',    func: pushScreen},
+    {key: 'MrecProg',   name: 'Programmatic MREC', func: pushScreen},
+    {key: 'MrecNative', name: 'Native UI MREC',    func: pushScreen},
   ];
 
   return (

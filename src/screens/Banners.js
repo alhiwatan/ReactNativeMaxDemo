@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import AppLovinMAX from 'react-native-applovin-max';
-import MenuList from './MenuList';
+import MenuList from '../utils/MenuList';
 
 const Banners = ({navigation, route}) => {
 
@@ -10,8 +9,8 @@ const Banners = ({navigation, route}) => {
   }
 
   const BannerMenu = [
-    {key: 'ProgBanner',   name: 'Programmatic Banner', func: pushScreen},
-    {key: 'NativeBanner', name: 'Native UI Banner',    func: pushScreen},
+    {key: 'BannerProg',   name: 'Programmatic Banner', func: pushScreen},
+    {key: 'BannerNative', name: 'Native UI Banner',    func: pushScreen},
   ];
 
   return (

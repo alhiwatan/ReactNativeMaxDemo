@@ -1,24 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {View, Button, StyleSheet} from 'react-native';
 import AppLovinMAX from 'react-native-applovin-max';
-import Account from '../Account';
-import Logger from './Logger';
-import adLoadState from './AdLoadState';
+import Accounts from './Accounts';
+import Logger, {useLogMessage} from '../utils/Logger';
+import AdLoadState from './AdLoadState';
 
 const Rewarded = ({navigation, route}) => {
-  const [logMessage, setLogMessage] = useState([]);
-
-  const logStatus = (msg) => {
-    const newArray = [...logMessage , msg];
-    setLogMessage(newArray);
-  }
-
-  const [rewardedAdLoadState, setRewardedAdLoadState] = useState(adLoadState.notLoaded);
-  const [rewardedAdRetryAttempt, setRewardedAdRetryAttempt] = useState(0);
+  const [logMessage, logStatus] = useLogMessage([]);
+  const [loadState, setLoadState] = useState(AdLoadState.notLoaded);
+  const [retryAttempt, setRetryAttempt] = useState(0);
 
   // Rewarded Ad Listeners
   AppLovinMAX.addEventListener('OnRewardedAdLoadedEvent', (adInfo) => {
-    setRewardedAdLoadState(adLoadState.loaded);
+    setLoadState(AdLoadState.loaded);
 
     // Rewarded ad is ready to be
     // shown. AppLovinMAX.isRewardedAdReady(REWARDED_AD_UNIT_ID) will
@@ -26,24 +20,24 @@ const Rewarded = ({navigation, route}) => {
     logStatus('Rewarded ad loaded from ' + adInfo.networkName);
 
     // Reset retry attempt
-    setRewardedAdRetryAttempt(0);
+    setRetryAttempt(0);
   });
 
   AppLovinMAX.addEventListener('OnRewardedAdLoadFailedEvent', (errorInfo) => {
-    setRewardedAdLoadState(adLoadState.notLoaded);
+    setLoadState(AdLoadState.notLoaded);
 
     // Rewarded ad failed to load
     // We recommend retrying with exponentially higher delays up to a
     // * maximum delay (in this case 64 seconds)
 
-    setRewardedAdRetryAttempt(rewardedAdRetryAttempt + 1);
+    setRetryAttempt(retryAttempt + 1);
 
-    var retryDelay = Math.pow(2, Math.min(6, rewardedAdRetryAttempt));
+    var retryDelay = Math.pow(2, Math.min(6, retryAttempt));
     logStatus('Rewarded ad failed to load with code ' + errorInfo.code +
               ' - retrying in ' + retryDelay + 's');
 
     setTimeout(function () {
-      AppLovinMAX.loadRewardedAd(Account.REWARDED_AD_UNIT_ID);
+      AppLovinMAX.loadRewardedAd(Accounts.REWARDED_AD_UNIT_ID);
     }, retryDelay * 1000);
   });
 
@@ -56,12 +50,12 @@ const Rewarded = ({navigation, route}) => {
   });
 
   AppLovinMAX.addEventListener('OnRewardedAdFailedToDisplayEvent', (adInfo) => {
-    setRewardedAdLoadState(adLoadState.notLoaded);
+    setLoadState(AdLoadState.notLoaded);
     logStatus('Rewarded ad failed to display');
   });
 
   AppLovinMAX.addEventListener('OnRewardedAdHiddenEvent', (adInfo) => {
-    setRewardedAdLoadState(adLoadState.notLoaded);
+    setLoadState(AdLoadState.notLoaded);
     logStatus('Rewarded ad hidden');
   });
 
@@ -70,10 +64,10 @@ const Rewarded = ({navigation, route}) => {
     });
 
   useEffect(() => {
-    if (!AppLovinMAX.isRewardedAdReady(Account.REWARDED_AD_UNIT_ID)) {
+    if (!AppLovinMAX.isRewardedAdReady(Accounts.REWARDED_AD_UNIT_ID)) {
       logStatus('Loading rewarded ad...');
-      setRewardedAdLoadState(adLoadState.loading);
-      AppLovinMAX.loadRewardedAd(Account.REWARDED_AD_UNIT_ID);
+      setLoadState(AdLoadState.loading);
+      AppLovinMAX.loadRewardedAd(Accounts.REWARDED_AD_UNIT_ID);
     }
   },[])
 
@@ -82,15 +76,15 @@ const Rewarded = ({navigation, route}) => {
       <Logger data={logMessage}/>
       <View style={styles.bottom}>
         <Button
-          title={(rewardedAdLoadState === adLoadState.loading) ? 'Loading' : 'Show'}
-          disabled={rewardedAdLoadState === adLoadState.loading}
+          title={(loadState === AdLoadState.loading) ? 'Loading' : 'Show'}
+          disabled={loadState === AdLoadState.loading}
           onPress={() => {
-            if (AppLovinMAX.isRewardedAdReady(Account.REWARDED_AD_UNIT_ID)) {
-              AppLovinMAX.showRewardedAd(Account.REWARDED_AD_UNIT_ID);
+            if (AppLovinMAX.isRewardedAdReady(Accounts.REWARDED_AD_UNIT_ID)) {
+              AppLovinMAX.showRewardedAd(Accounts.REWARDED_AD_UNIT_ID);
             } else {
               logStatus('Loading rewarded ad...');
-              setRewardedAdLoadState(adLoadState.loading);
-              AppLovinMAX.loadRewardedAd(Account.REWARDED_AD_UNIT_ID);
+              setLoadState(AdLoadState.loading);
+              AppLovinMAX.loadRewardedAd(Accounts.REWARDED_AD_UNIT_ID);
             }
           }}
         />
