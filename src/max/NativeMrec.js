@@ -1,19 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {View, Button, StyleSheet} from 'react-native';
 import AppLovinMAX from 'react-native-applovin-max';
-import Account from '../Account';
-import Logger from './Logger';
-import adLoadState from './AdLoadState';
+import Accounts from './Accounts';
+import Logger, {useLogMessage} from '../utils/Logger';
 
 const NativeMrec = ({navigation, route}) => {
-  const [logMessage, setLogMessage] = useState([]);
-
-  const logStatus = (msg) => {
-    const newArray = [...logMessage , msg];
-    setLogMessage(newArray);
-  }
-
-  const [isNativeUIMRecShowing, setIsNativeUIMRecShowing] = useState(false);
+  const [logMessage, logStatus] = useLogMessage([]);
+  const [isShowing, setIsShowing] = useState(false);
 
   // MREC Ad Listeners
   AppLovinMAX.addEventListener('OnMRecAdLoadedEvent', (adInfo) => {
@@ -36,9 +29,9 @@ const NativeMrec = ({navigation, route}) => {
     <View style={styles.container}>
       {
         (() => {
-          if (isNativeUIMRecShowing) {
+          if (isShowing) {
             return (
-              <AppLovinMAX.AdView adUnitId={Account.MREC_AD_UNIT_ID}
+              <AppLovinMAX.AdView adUnitId={Accounts.MREC_AD_UNIT_ID}
                                   adFormat={AppLovinMAX.AdFormat.MREC}
                                   style={styles.mrec}/>
             );
@@ -48,9 +41,9 @@ const NativeMrec = ({navigation, route}) => {
       <Logger data={logMessage}/>
       <View style={styles.bottom}>
         <Button
-          title={isNativeUIMRecShowing ? 'Hide' : 'Show'}
+          title={isShowing ? 'Hide' : 'Show'}
           onPress={() => {
-            setIsNativeUIMRecShowing(!isNativeUIMRecShowing);
+            setIsShowing(!isShowing);
           }}
         />
       </View>

@@ -1,19 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {View, Button, StyleSheet} from 'react-native';
 import AppLovinMAX from 'react-native-applovin-max';
-import Account from '../Account';
-import Logger from './Logger';
-import adLoadState from './AdLoadState';
+import Accounts from './Accounts';
+import Logger, {useLogMessage} from '../utils/Logger';
 
 const NativeBanner = ({navigation, route}) => {
-  const [logMessage, setLogMessage] = useState([]);
-
-  const logStatus = (msg) => {
-    const newArray = [...logMessage , msg];
-    setLogMessage(newArray);
-  }
-
-  const [isNativeUIBannerShowing, setIsNativeUIBannerShowing] = useState(false);
+  const [logMessage, logStatus] = useLogMessage([]);
+  const [isShowing, setIsShowing] = useState(false);
 
   // Banner Ad Listeners
   AppLovinMAX.addEventListener('OnBannerAdLoadedEvent', (adInfo) => {
@@ -38,9 +31,9 @@ const NativeBanner = ({navigation, route}) => {
       <Logger data={logMessage}/>
       {
         (() => {
-          if (isNativeUIBannerShowing) {
+          if (isShowing) {
             return (
-              <AppLovinMAX.AdView adUnitId={Account.BANNER_AD_UNIT_ID}
+              <AppLovinMAX.AdView adUnitId={Accounts.BANNER_AD_UNIT_ID}
                                   adFormat={AppLovinMAX.AdFormat.BANNER}
                                   style={styles.banner}/>
             );
@@ -49,9 +42,9 @@ const NativeBanner = ({navigation, route}) => {
       }
       <View style={styles.bottom}>
         <Button
-          title={isNativeUIBannerShowing ? 'Hide' : 'Show'}
+          title={isShowing ? 'Hide' : 'Show'}
           onPress={() => {
-            setIsNativeUIBannerShowing(!isNativeUIBannerShowing);
+            setIsShowing(!isShowing);
           }}
         />
       </View>

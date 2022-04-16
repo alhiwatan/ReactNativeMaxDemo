@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet, Platform} from 'react-native';
 import AppLovinMAX from 'react-native-applovin-max';
-import MenuList from './MenuList';
+import MenuList from '../utils/MenuList';
+import Accounts from '../max/Accounts';
 
 const Main = ({navigation, route}) => {
 
@@ -15,6 +16,10 @@ const Main = ({navigation, route}) => {
     }
   }
 
+  const startWeb = (key, name) => {
+    navigation.push(key, {name: name, url: Accounts.SUPPORT_URL});
+  }
+
   const MaxMenu = [
     {key: 'Inter',    name: 'Interstitials',             func: pushScreen},
     {key: 'Rewarded', name: 'Rewarded',                  func: pushScreen},
@@ -25,7 +30,7 @@ const Main = ({navigation, route}) => {
   ];
 
   const SupportMenu = [
-    {key: 'Support',  name: 'Visit our Support Site',    func: pushScreen},
+    {key: 'Web',      name: 'Visit our Support Site',    func: startWeb},
   ]
 
   return (

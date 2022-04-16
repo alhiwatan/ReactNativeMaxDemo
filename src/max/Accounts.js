@@ -22,12 +22,15 @@ const MREC_AD_UNIT_ID = Platform.select({
   android: 'c935a27914e661dc',
 });
 
+const SUPPORT_URL = 'https://support.applovin.com/support/home';
+
 export default {
   SDK_KEY,
   INTERSTITIAL_AD_UNIT_ID,
   REWARDED_AD_UNIT_ID,
   BANNER_AD_UNIT_ID,
   MREC_AD_UNIT_ID,
+  SUPPORT_URL,
 };
 
 //////////////////////////////////////////////

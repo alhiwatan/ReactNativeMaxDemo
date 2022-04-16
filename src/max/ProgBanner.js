@@ -1,20 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {View, Button, StyleSheet} from 'react-native';
 import AppLovinMAX from 'react-native-applovin-max';
-import Account from '../Account';
-import Logger from './Logger';
-import adLoadState from './AdLoadState';
+import Accounts from './Accounts';
+import Logger, {useLogMessage} from '../utils/Logger';
 
 const ProgBanner = ({navigation, route}) => {
-  const [logMessage, setLogMessage] = useState([]);
-
-  const logStatus = (msg) => {
-    const newArray = [...logMessage , msg];
-    setLogMessage(newArray);
-  }
-
-  const [isProgrammaticBannerCreated, setIsProgrammaticBannerCreated] = useState(false);
-  const [isProgrammaticBannerShowing, setIsProgrammaticBannerShowing] = useState(false);
+  const [logMessage, logStatus] = useLogMessage([]);
+  const [isCreated, setIsCreated] = useState(false);
+  const [isShowing, setIsShowing] = useState(false);
 
   // Banner Ad Listeners
   AppLovinMAX.addEventListener('OnBannerAdLoadedEvent', (adInfo) => {
@@ -35,27 +28,27 @@ const ProgBanner = ({navigation, route}) => {
   });
 
   useEffect(() => {
-    if (!isProgrammaticBannerCreated) {
-
+    if (!isCreated) {
       //
-      // Programmatic banner creation - banners are automatically sized to 320x50 on phones and 728x90 on tablets
+      // Programmatic banner creation - banners are automatically
+      // sized to 320x50 on phones and 728x90 on tablets
       //
       AppLovinMAX.createBannerWithOffsets(
-        Account.BANNER_AD_UNIT_ID,
+        Accounts.BANNER_AD_UNIT_ID,
         AppLovinMAX.AdViewPosition.TOP_CENTER, 0, 50
       );
 
       // Set background color for banners to be fully functional
       // In this case we are setting it to black - PLEASE USE HEX STRINGS ONLY
-      AppLovinMAX.setBannerBackgroundColor(Account.BANNER_AD_UNIT_ID, '#d3d3d3');
+      AppLovinMAX.setBannerBackgroundColor(Accounts.BANNER_AD_UNIT_ID, '#d3d3d3');
 
-      setIsProgrammaticBannerCreated(true);
+      setIsCreated(true);
     }
   },[]);
 
   useEffect(() => {
       navigation.addListener('beforeRemove', (e) => {
-        AppLovinMAX.hideBanner(Account.BANNER_AD_UNIT_ID);
+        AppLovinMAX.hideBanner(Accounts.BANNER_AD_UNIT_ID);
       })
   }, [navigation]);
 
@@ -65,32 +58,34 @@ const ProgBanner = ({navigation, route}) => {
       <Logger data={logMessage}/>
       <View style={styles.bottom}>
         <Button
-          title={isProgrammaticBannerShowing ? 'Hide' : 'Show'}
+          title={isShowing ? 'Hide' : 'Show'}
           onPress={() => {
-            if (isProgrammaticBannerShowing) {
-              AppLovinMAX.hideBanner(Account.BANNER_AD_UNIT_ID);
+            if (isShowing) {
+              AppLovinMAX.hideBanner(Accounts.BANNER_AD_UNIT_ID);
             } else {
 
-              if (!isProgrammaticBannerCreated) {
+              if (!isCreated) {
                 //
-                // Programmatic banner creation - banners are automatically sized to 320x50 on phones and 728x90 on tablets
+                // Programmatic banner creation - banners are
+                // automatically sized to 320x50 on phones and 728x90
+                // on tablets
                 //
                 AppLovinMAX.createBannerWithOffsets(
-                  Account.BANNER_AD_UNIT_ID,
+                  Accounts.BANNER_AD_UNIT_ID,
                   AppLovinMAX.AdViewPosition.TOP_CENTER, 0, 50
                 );
 
                 // Set background color for banners to be fully functional
                 // In this case we are setting it to black - PLEASE USE HEX STRINGS ONLY
-                AppLovinMAX.setBannerBackgroundColor(Account.BANNER_AD_UNIT_ID, '#d3d3d3');
+                AppLovinMAX.setBannerBackgroundColor(Accounts.BANNER_AD_UNIT_ID, '#d3d3d3');
 
-                setIsProgrammaticBannerCreated(true);
+                setIsCreated(true);
               }
 
-              AppLovinMAX.showBanner(Account.BANNER_AD_UNIT_ID);
+              AppLovinMAX.showBanner(Accounts.BANNER_AD_UNIT_ID);
             }
 
-            setIsProgrammaticBannerShowing(!isProgrammaticBannerShowing);
+            setIsShowing(!isShowing);
           }}
         />
       </View>
