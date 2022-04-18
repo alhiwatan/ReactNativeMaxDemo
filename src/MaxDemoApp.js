@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -16,6 +17,30 @@ import ProgBanner from './max/ProgBanner';
 import NativeBanner from './max/NativeBanner';
 import ProgMrec from './max/ProgMrec';
 import NativeMrec from './max/NativeMrec';
+
+const GdprConsentAlert = (onConsent = f => f) =>
+      Alert.alert(
+        'AppLovin Demo App',
+        'Asks for your consent to use your personal data to:\n \
+\n \
+📶 Store and/or access information on a device\n \
+\n \
+🖥 Develop and improve products\n \
+\n \
+👤 Personalised ads and content, ad and content measurement, and audience insights',
+        [
+          {
+            text: 'Do Not consent',
+            onPress: () => onConsent(false),
+            style: 'cancel'
+          },
+          {
+            text: 'Consent',
+            onPress: () => onConsent(true)
+          },
+        ],
+        {cancelable: false}
+      );
 
 const MaxDemoApp = () => {
 
@@ -58,13 +83,29 @@ const MaxDemoApp = () => {
     {name: 'Web',          component: Web,          options: titleOption},
   ];
 
+  AppLovinMAX.setVerboseLogging(true);
+
+  AppLovinMAX.setPrivacyPolicyUrl('https://www.applovin.com/privacy/');
+  AppLovinMAX.setTermsOfServiceUrl('https://www.applovin.com/terms/');
+  AppLovinMAX.setConsentFlowEnabled(true);
+
   AppLovinMAX.initialize(Accounts.SDK_KEY, () => {
-    AppLovinMAX.setVerboseLogging(true);
+    switch (AppLovinMAX.getConsentDialogState()) {
+    case AppLovinMAX.ConsentDialogState.UNKNOWN:
+      break;
+    case AppLovinMAX.ConsentDialogState.APPLIES:
+      GdprConsentAlert((consented) => {AppLovinMAX.setHasUserConsent(consented)});
+      break;
+    case AppLovinMAX.ConsentDialogState.DOES_NOT_APPLY:
+      break;
+    }
+
+    // TODO: Children Data, CCPA
   });
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName={screens[0].name}>
         {screens.map((screen, i) => (
           <Stack.Screen
             key={i}
