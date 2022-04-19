@@ -3,6 +3,9 @@ package com.my.awesome.demoapp;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+// react-native-splash-screen >= 0.3.1
+import org.devio.rn.splashscreen.SplashScreen; // here
+import android.os.Bundle;
 
 public class MainActivity extends ReactActivity {
 
@@ -14,6 +17,13 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "ReactNativeMaxDemo";
   }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    SplashScreen.show(this);  // here
+    super.onCreate(savedInstanceState);
+  }
+
 
   /**
    * Returns the instance of the {@link ReactActivityDelegate}. There the RootView is created and

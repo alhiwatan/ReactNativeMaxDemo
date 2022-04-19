@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Platform} from 'react-native';
 import AppLovinMAX from 'react-native-applovin-max';
+import SplashScreen from 'react-native-splash-screen'
 import MenuList from '../utils/MenuList';
 import Accounts from '../max/Accounts';
 
@@ -32,6 +33,12 @@ const Main = ({navigation, route}) => {
   const SupportMenu = [
     {key: 'Web',      name: 'Visit our Support Site',    func: startWeb},
   ]
+
+  useEffect(() => {
+    setTimeout(function(){
+      SplashScreen.hide();
+    }, 1000);
+  },[]);
 
   return (
     <View style={styles.container}>
